@@ -7,10 +7,11 @@ const app = fastify();
 const prisma = new PrismaClient();
 
 
-app.get("/user", async()=> {
-  const users = await prisma.user.findMany();
-
-  return users;
+app.get("/user", async(e,response)=> {
+  const users = await prisma.user.findMany()
+  return {
+    users
+  }
 })
 
 
@@ -23,6 +24,7 @@ app.post("/user", async (request, reply)=> {
   })
 
   const { name, email, password } = createUserSchema.parse(request.body);
+ 
 
   await prisma.user.create({
     data: {
@@ -30,10 +32,10 @@ app.post("/user", async (request, reply)=> {
       email,
       password
     }
-  });
+  })
 
 
-  return reply.status(201)
+  return reply.status(201).send()
 })
 
 
